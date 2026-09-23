@@ -130,8 +130,8 @@ async function addFound(hab, nota){
 async function delFound(id){ if (sb){ try{ await sb.from("mant_cierre").delete().eq("id", id); }catch(e){} } await load(); }
 
 function tasksOf(kind, x){
-  if (kind==="mp_general") return (x.tareas||[]).length ? x.tareas : ["Mantenimiento general"];
-  if (kind==="mp_libre") return (x.tareas||[]).length ? x.tareas : ["Mantenimiento general"];
+  if (kind==="mp_general") return ((x.tareas||[]).concat(x.nota ? [x.nota] : [])).length ? ((x.tareas||[]).concat(x.nota ? [x.nota] : [])) : ["Mantenimiento general"];
+  if (kind==="mp_libre") return ((x.tareas||[]).concat(x.nota ? [x.nota] : [])).length ? ((x.tareas||[]).concat(x.nota ? [x.nota] : [])) : ["Mantenimiento general"];
   if (kind==="mp_puntual") return ((x.tareas||[]).concat(x.nota ? [x.nota] : [])).length ? ((x.tareas||[]).concat(x.nota ? [x.nota] : [])) : ["Revisar"];
   if (kind==="mp_cliente") return [ x.nota || "Incidencia" ];
   if (kind==="mp_shared" || kind==="mp_manual") return x.tareas || [];
