@@ -25,6 +25,8 @@
   .chead{ display:flex; align-items:baseline; gap:10px; margin-bottom:10px }
   .hab{ font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:20px }
   .ctx{ color:var(--soft); font-size:13px }
+  .item.timed{ border-color:#E8A13D; border-width:2px; background:#fff8ec }
+  .item.timed .ctx{ color:#fff; background:#E8A13D; font-weight:800; padding:2px 9px; border-radius:999px; font-size:12.5px }
   .tbtns{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px }
   .tbtn{ border:1px solid var(--line); background:#eef2f2; color:#39494a; border-radius:12px; padding:11px 15px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer }
   .tbtn.on{ background:var(--done); color:#fff; border-color:var(--done) }
@@ -146,9 +148,9 @@ function noteField(base){
   const c = cmap["mp_note|"+base]; const v = c && c.nota ? esc(c.nota) : "";
   return '<input class="anote" data-base="'+esc(base)+'" placeholder="nota del apartamento (opcional)" value="'+v+'">';
 }
-function card(kind, base, apto, ctx, tasks){
+function card(kind, base, apto, ctx, tasks, timed){
   const btns = tasks.map(t => taskBtn(kind, base, t)).join("");
-  return '<div class="item"><div class="chead"><span class="hab">'+esc(apto)+'</span>'+(ctx?'<span class="ctx">'+esc(ctx)+'</span>':"")+'</div>'
+  return '<div class="item'+(timed?' timed':'')+'"><div class="chead"><span class="hab">'+esc(apto)+'</span>'+(ctx?'<span class="ctx">'+(timed?'\u23f0 ':'')+esc(ctx)+'</span>':"")+'</div>'
     + '<div class="tbtns">'+btns+'</div>'+noteField(base)+'</div>';
 }
 function foundSection(){
@@ -194,7 +196,16 @@ function render(){
   html += '<h2>&#128309; Libres (sin hu\u00e9sped ni movimiento hoy) <span style="color:var(--soft)">('+L.length+')</span></h2>';
   html += L.length ? L.map(x => card("mp_libre", x.hab, x.hab, "", tasksOf("mp_libre",x))).join("") : '<div class="none">Sin libres.</div>';
   if (MN.length){ html += '<h2>&#128221; Tareas pegadas <span style="color:var(--soft)">('+MN.length+')</span></h2>'; html += MN.map(x => card("mp_manual", x.hab, x.hab, x.ctx||"", tasksOf("mp_manual",x))).join(""); }
-  if (X.length){ html += '<h2>&#10133; Incidencias <span style="color:var(--soft)">('+X.length+')</span></h2>'; html += X.map(x => card("mp_extra", x.id, x.hab, x.hora || "", tasksOf("mp_extra",x))).join(""); }
+  if (X.length){
+    const Xord = X.slice().sort((a,b) => {
+      if (a.hora && !b.hora) return -1;
+      if (!a.hora && b.hora) return 1;
+      if (a.hora && b.hora) return a.hora.localeCompare(b.hora);
+      return 0;
+    });
+    html += '<h2>&#10133; Incidencias <span style="color:var(--soft)">('+X.length+')</span></h2>';
+    html += Xord.map(x => card("mp_extra", x.id, x.hab, x.hora || "", tasksOf("mp_extra",x), !!x.hora)).join("");
+  }
   html += foundSection();
   html += summary(P,G,C,X,SH,MN,L);
   w.innerHTML = html; wireItems(); wireFound();
