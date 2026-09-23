@@ -194,7 +194,7 @@ function render(){
   html += '<h2>&#128309; Libres (sin hu\u00e9sped ni movimiento hoy) <span style="color:var(--soft)">('+L.length+')</span></h2>';
   html += L.length ? L.map(x => card("mp_libre", x.hab, x.hab, "", tasksOf("mp_libre",x))).join("") : '<div class="none">Sin libres.</div>';
   if (MN.length){ html += '<h2>&#128221; Tareas pegadas <span style="color:var(--soft)">('+MN.length+')</span></h2>'; html += MN.map(x => card("mp_manual", x.hab, x.hab, x.ctx||"", tasksOf("mp_manual",x))).join(""); }
-  if (X.length){ html += '<h2>&#10133; Incidencias <span style="color:var(--soft)">('+X.length+')</span></h2>'; html += X.map(x => card("mp_extra", x.id, x.hab, x.tipo, tasksOf("mp_extra",x))).join(""); }
+  if (X.length){ html += '<h2>&#10133; Incidencias <span style="color:var(--soft)">('+X.length+')</span></h2>'; html += X.map(x => card("mp_extra", x.id, x.hab, x.hora || "", tasksOf("mp_extra",x))).join(""); }
   html += foundSection();
   html += summary(P,G,C,X,SH,MN,L);
   w.innerHTML = html; wireItems(); wireFound();
