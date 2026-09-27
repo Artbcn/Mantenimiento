@@ -188,6 +188,11 @@ function render(){
   const SH = (parte.compartidas||[]).length ? [{ hab:"General", tareas:parte.compartidas }] : [];
   const MN = parte.manual||[];
   let html = "";
+  if (parte.instrucciones && parte.instrucciones.trim()){
+    html += '<div style="background:#fff8ec;border:2px solid #E8A13D;border-radius:14px;padding:14px 16px;margin:10px 0 16px">'
+      + '<div style="font-weight:800;font-size:13px;color:#9a6a0a;margin-bottom:4px">&#128226; INSTRUCCIONES PARA HOY</div>'
+      + '<div style="font-size:15px;color:var(--ink);white-space:pre-wrap">' + esc(parte.instrucciones) + '</div></div>';
+  }
   if (SH.length){ html += '<h2>&#128203; General del d\u00eda</h2>'; html += SH.map(x => card("mp_shared", "_general", "General", "", tasksOf("mp_shared",x))).join(""); }
   html += '<h2>&#128295; Puntual (ventana) <span style="color:var(--soft)">('+P.length+')</span></h2>';
   html += P.length ? P.map(x => card("mp_puntual", x.hab, x.hab, x.huesped, tasksOf("mp_puntual",x))).join("") : '<div class="none">Sin puntuales.</div>';
